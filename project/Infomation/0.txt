@@ -1,2 +1,1 @@
-rectangle 282,211
-rectangle 601,220
+rectangle 459,260

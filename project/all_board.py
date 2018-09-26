@@ -110,6 +110,7 @@ class Painter:
                         self.text_list = []
                     if event.key == K_RETURN:  # 回车事件
                         self.recognize(self.white_surface)
+                        self.show_surface(is_left=True)
                     if event.key == K_LEFT:
                         self.show_surface(is_left=True)
                     if event.key == K_RIGHT:
@@ -117,6 +118,7 @@ class Painter:
                 elif event.type == MOUSEBUTTONDOWN:
                     if buttons.recongnize_button.is_over():
                         self.recognize(self.white_surface)
+                        self.show_surface(is_left=True)
                     if buttons.refresh_button.is_over():
                         self.white_surface.fill(WHITE)
                         self.text_list = []
