@@ -1,7 +1,7 @@
 import os
 import pygame
 from pygame.locals import *
-import shapeanalysis
+import shape_analysis
 
 
 class Button:
@@ -108,7 +108,7 @@ class Painter:
         info_file = open(info_path, 'a')
 
         # 识别图片
-        ld = shapeanalysis.ShapeAnalysis(pic_path)
+        ld = shape_analysis.ShapeAnalysis(pic_path)
         analysis_result = ld.analysis()
         for shape_data in analysis_result:
             info_file.write(shape_data.shape_type + " " + str(shape_data.list[0]) + "," +str(shape_data.list[1]))
