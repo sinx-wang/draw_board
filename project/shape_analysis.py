@@ -15,8 +15,8 @@ class ShapeAnalysis:
         self.shape_list = []
 
     def analysis(self):
-        h, w, ch = self.src.shape
-        result = np.zeros((h, w, ch), dtype=np.uint8)
+        #  h, w, ch = self.src.shape
+        #  result = np.zeros((h, w, ch), dtype=np.uint8)
         # 二值化图像
         print("start to detect lines……")
         gray = cv.cvtColor(self.src, cv.COLOR_BGR2GRAY)
@@ -34,7 +34,6 @@ class ShapeAnalysis:
 
                 # 分析几何形状
                 corners = len(approx)
-                shape_type = ""
                 print(corners)
                 if corners == 3:
                     shape_type = "triangle"
@@ -61,7 +60,7 @@ class ShapeAnalysis:
             # cv.circle(result, (cx, cy), 3, (0, 0, 255), -1)
             print(cx, cy)
 
-            print("形状: %s" % (shape_type))
+            print("形状: %s" % shape_type)
 
             shape = ShapeData(shape_type, [cx, cy])
             self.shape_list.append(shape)
@@ -72,4 +71,3 @@ class ShapeAnalysis:
 if __name__ == "__main__":
     ld = ShapeAnalysis("Pictures/7.png")
     print(ld.analysis())
-

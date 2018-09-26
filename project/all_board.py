@@ -52,11 +52,11 @@ class Text:
     def __init__(self, position, content):
         self.content = content
         self.position = position
+        self.my_font = pygame.font.SysFont("arial", 16)
+        self.text_surface = self.my_font.render(self.content, True, (0, 0, 0))
 
     def display_text(self, screen):
         pygame.font.init()
-        self.my_font = pygame.font.SysFont("arial", 16)
-        self.text_surface = self.my_font.render(self.content, True, (0, 0, 0))
         x, y = self.position
         screen.blit(self.text_surface, (x, y))
 
@@ -92,7 +92,6 @@ class Painter:
     @staticmethod
     def find_pic_num():
         pic_dir_path = "Pictures"
-        max_num = 0
         max_num = len([name for name in os.listdir(pic_dir_path) if os.path.isfile(os.path.join(pic_dir_path, name))])
         return max_num
 
@@ -111,7 +110,7 @@ class Painter:
         ld = shape_analysis.ShapeAnalysis(pic_path)
         analysis_result = ld.analysis()
         for shape_data in analysis_result:
-            info_file.write(shape_data.shape_type + " " + str(shape_data.list[0]) + "," +str(shape_data.list[1]))
+            info_file.write(shape_data.shape_type + " " + str(shape_data.list[0]) + "," + str(shape_data.list[1]))
             info_file.write('\n')
 
         info_file.close()
@@ -138,7 +137,7 @@ class Painter:
             self.right_stop = True
             self.white_surface.fill((255, 255, 255))
             self.text_list = []
-        else: # 读过去的
+        else:  # 读过去的
             if num == 0:
                 self.left_stop = True
             else:
@@ -171,14 +170,14 @@ class Painter:
         self.right_button.render()
 
     def show_surface(self, is_left):
-        sum = self.find_pic_num()
+        sum_of_pics = self.find_pic_num()
         num = self.current_surface_no
-        if sum == 0:
+        if sum_of_pics == 0:
             self.load_history_surface()
             return
         if is_left:
             if num == -1:  # 最新编辑状态
-                self.current_surface_no = sum - 1
+                self.current_surface_no = sum_of_pics - 1
                 self.text_list = []
             elif num == 0:
                 return
@@ -189,7 +188,7 @@ class Painter:
             if num == -1:
                 return
             self.text_list = []
-            if num == sum - 1:
+            if num == sum_of_pics - 1:
                 self.current_surface_no = -1
             else:
                 self.current_surface_no += 1
