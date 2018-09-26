@@ -1,5 +1,4 @@
 import cv2 as cv
-import numpy as np
 
 
 # 数据结构，String shape_type, [x, y]
@@ -68,6 +67,7 @@ class ShapeAnalysis:
         return self.shape_list
 
 
+# 测试用
 if __name__ == "__main__":
     ld = ShapeAnalysis("Pictures/7.png")
     print(ld.analysis())
