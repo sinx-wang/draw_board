@@ -1,0 +1,2 @@
+rectangle 648,240
+triangle 284,240
