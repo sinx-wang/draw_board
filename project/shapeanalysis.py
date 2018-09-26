@@ -1,13 +1,15 @@
 import cv2 as cv
 import numpy as np
 
-# 数据结构，String shape_type, [x, y]
-class shape_data():
-    def __init__(self, shape_type, list):
-        self.shape_type = shape_type
-        self.list = list
 
-class shape_analysis():
+# 数据结构，String shape_type, [x, y]
+class ShapeData:
+    def __init__(self, shape_type, info_list):
+        self.shape_type = shape_type
+        self.list = info_list
+
+
+class ShapeAnalysis:
     def __init__(self, filename):
         self.src = cv.imread(filename)
         self.shape_list = []
@@ -61,12 +63,13 @@ class shape_analysis():
 
             print("形状: %s" % (shape_type))
 
-            shape = shape_data(shape_type, [cx, cy])
+            shape = ShapeData(shape_type, [cx, cy])
             self.shape_list.append(shape)
 
         return self.shape_list
 
+
 if __name__ == "__main__":
-    ld = shape_analysis("Pictures/7.png")
+    ld = ShapeAnalysis("Pictures/7.png")
     print(ld.analysis())
 

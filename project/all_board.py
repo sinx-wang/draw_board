@@ -1,16 +1,17 @@
 import os
 import pygame
 from pygame.locals import *
-import shape_analysis
+import shapeanalysis
 
-class __button__():
+
+class Button:
     def __init__(self, image, position, screen):
         self.image = pygame.image.load(image).convert_alpha()
         self.position = position
         self.screen = screen
 
     # 判断鼠标是否在按钮上
-    def isOver(self):
+    def is_over(self):
         point_x, point_y = pygame.mouse.get_pos()
         x, y = self.position
         w, h = self.image.get_size()
@@ -24,7 +25,8 @@ class __button__():
         w, h = self.image.get_size()
         self.screen.blit(self.image, (x - w / 2, y - h / 2))
 
-class Brush():
+
+class Brush:
     def __init__(self, screen):
         self.screen = screen
         self.color = (0, 0, 0)
@@ -45,7 +47,8 @@ class Brush():
             pygame.draw.line(self.screen, self.color, self.last_pos, pos, self.size * 2)
             self.last_pos = pos
 
-class Text():
+
+class Text:
     def __init__(self, position, content):
         self.content = content
         self.position = position
@@ -57,7 +60,8 @@ class Text():
         x, y = self.position
         screen.blit(self.text_surface, (x, y))
 
-class Painter():
+
+class Painter:
     def __init__(self):
         self.make_dirs()
         white_screen_width = 900
@@ -72,24 +76,25 @@ class Painter():
         pygame.display.set_caption("Drawboard")
         self.clock = pygame.time.Clock()
 
-        self.text_list = []# 现在这一张图里的标注信息
+        self.text_list = []  # 现在这一张图里的标注信息
         self.current_surface_no = -1
         # 是否到了两侧的界限
         self.left_stop = True
         self.right_stop = True
 
-    def make_dirs(self):
+    @staticmethod
+    def make_dirs():
         if not os.path.exists("Pictures"):
             os.mkdir("Pictures")
         if not os.path.exists("Infomation"):
             os.mkdir("Infomation")
 
-    def find_pic_num(self):
+    @staticmethod
+    def find_pic_num():
         pic_dir_path = "Pictures"
         max_num = 0
         max_num = len([name for name in os.listdir(pic_dir_path) if os.path.isfile(os.path.join(pic_dir_path, name))])
         return max_num
-
 
     def recognize(self, surface):
         # 保存图片
@@ -103,7 +108,7 @@ class Painter():
         info_file = open(info_path, 'a')
 
         # 识别图片
-        ld = shape_analysis.shape_analysis(pic_path)
+        ld = shapeanalysis.ShapeAnalysis(pic_path)
         analysis_result = ld.analysis()
         for shape_data in analysis_result:
             info_file.write(shape_data.shape_type + " " + str(shape_data.list[0]) + "," +str(shape_data.list[1]))
@@ -114,16 +119,16 @@ class Painter():
 
     def load_info(self, path):
         # 把读到的标注信息放入text_list中
-        input = open(path)
-        for line in input:
+        file_content = open(path)
+        for line in file_content:
             type_str, pos_str = line.split()
             pos = [int(pos_str.split(',')[0]), int(pos_str.split(',')[1])]
             text = Text(pos, type_str)
             self.text_list.append(text)
-        input.close()
+        file_content.close()
 
     def load_history_surface(self):
-        num = self.current_surface_no # -1代表画板
+        num = self.current_surface_no  # -1代表画板
 
         if num < 0:
             if self.find_pic_num() == 0:
@@ -148,8 +153,8 @@ class Painter():
 
     def button_view(self):
         stop_button_path = 'Resourse/button_stop.png'
-        self.recongnize_button = __button__('Resourse/button_confirm.png', (100, 625), self.screen)
-        self.refresh_button = __button__('Resourse/button_refresh.png', (200, 625), self.screen)
+        self.recongnize_button = Button('Resourse/button_confirm.png', (100, 625), self.screen)
+        self.refresh_button = Button('Resourse/button_refresh.png', (200, 625), self.screen)
         if self.left_stop:
             left_button_path = stop_button_path
         else:
@@ -158,21 +163,21 @@ class Painter():
             right_button_path = stop_button_path
         else:
             right_button_path = 'Resourse/button_right.png'
-        self.left_button = __button__(left_button_path, (650, 625), self.screen)
-        self.right_button = __button__(right_button_path, (750, 625), self.screen)
+        self.left_button = Button(left_button_path, (650, 625), self.screen)
+        self.right_button = Button(right_button_path, (750, 625), self.screen)
         self.recongnize_button.render()
         self.refresh_button.render()
         self.left_button.render()
         self.right_button.render()
 
-    def show_surface(self, isLeft):
+    def show_surface(self, is_left):
         sum = self.find_pic_num()
         num = self.current_surface_no
         if sum == 0:
             self.load_history_surface()
             return
-        if isLeft:
-            if num == -1: # 最新编辑状态
+        if is_left:
+            if num == -1:  # 最新编辑状态
                 self.current_surface_no = sum - 1
                 self.text_list = []
             elif num == 0:
@@ -220,28 +225,29 @@ class Painter():
                     if event.key == K_ESCAPE:
                         self.white_surface.fill((255, 255, 255))
                         self.text_list = []
-                    if event.key == K_RETURN: # 回车事件
+                    if event.key == K_RETURN:  # 回车事件
                         self.recognize(self.white_surface)
                     if event.key == K_LEFT:
-                        self.show_surface(isLeft = True)
+                        self.show_surface(is_left=True)
                     if event.key == K_RIGHT:
-                        self.show_surface(isLeft = False)
+                        self.show_surface(is_left=False)
                 elif event.type == MOUSEBUTTONDOWN:
-                    if self.recongnize_button.isOver():
+                    if self.recongnize_button.is_over():
                         self.recognize(self.white_surface)
-                    if self.refresh_button.isOver():
+                    if self.refresh_button.is_over():
                         self.white_surface.fill((255, 255, 255))
                         self.text_list = []
-                    if self.left_button.isOver():
-                        self.show_surface(isLeft=True)
-                    if self.right_button.isOver():
-                        self.show_surface(isLeft=False)
+                    if self.left_button.is_over():
+                        self.show_surface(is_left=True)
+                    if self.right_button.is_over():
+                        self.show_surface(is_left=False)
                     self.brush.start_draw(pygame.mouse.get_pos())
                 elif event.type == MOUSEMOTION:
                     self.brush.draw(event.pos)
                 elif event.type == MOUSEBUTTONUP:
                     self.brush.end_draw()
             pygame.display.update()
+
 
 if __name__ == '__main__':
     app = Painter()
